@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8" />
   <title>Dashboard - Météo</title>
@@ -9,25 +10,31 @@
     body {
       background: #f0f2f5;
     }
+
     .navbar {
       background-color: #007bff;
     }
+
     .navbar-brand {
       color: white;
       font-weight: bold;
     }
+
     .navbar-brand:hover {
       color: #f8f9fa;
     }
+
     .weather-card {
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       transition: 0.3s ease;
     }
+
     .weather-card:hover {
       transform: scale(1.01);
     }
   </style>
 </head>
+
 <body>
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark px-4">
@@ -56,127 +63,145 @@
   </div>
 
   <script>
-    const API_URL = "https://weatherapp-backend-production.up.railway.app";
+    const API_URL = "https://weatherapp-backend-production-57dc.up.railway.app";
+
     const token = localStorage.getItem("token");
     if (!token) window.location.href = "login.html";
 
     async function loadCities() {
-      const res = await fetch(`${API_URL}/cities`, {
-        headers: { Authorization: "Bearer " + token }
-      });
+      try {
+        const res = await fetch(`${API_URL}/cities`, {
+          headers: { Authorization: "Bearer " + token }
+        });
 
-      const data = await res.json(); 
+        if (!res.ok) {
+          throw new Error('Erreur lors du chargement des villes');
+        }
 
-      const cityList = document.getElementById("cityList");
-      cityList.innerHTML = "";
+        const data = await res.json();
+        const list = document.getElementById("cityList");
+        list.innerHTML = "";
 
-      data.forEach(city => {
-        const w = city.weather;
+        data.forEach(city => {
+          const w = city.weather;
 
-        if (!w || !w.weather) return;
+          if (!w || !w.weather) return;
 
-        const description = w.weather[0].description;
-        const temp = w.main.temp;
-        const humidity = w.main.humidity;
-        const pressure = w.main.pressure;
-        const wind = w.wind.speed;
-        const visibility = (w.visibility / 1000).toFixed(1) + " km";
-        const clouds = w.clouds.all + "%";
-        const sunrise = new Date((w.sys.sunrise + w.timezone) * 1000).toLocaleTimeString();
-        const sunset = new Date((w.sys.sunset + w.timezone) * 1000).toLocaleTimeString();
+          const description = w.weather[0].description;
+          const temp = w.main.temp;
+          const humidity = w.main.humidity;
+          const pressure = w.main.pressure;
+          const wind = w.wind.speed;
+          const visibility = (w.visibility / 1000).toFixed(1) + " km";
+          const clouds = w.clouds.all + "%";
+          const sunrise = new Date((w.sys.sunrise + w.timezone) * 1000).toLocaleTimeString();
+          const sunset = new Date((w.sys.sunset + w.timezone) * 1000).toLocaleTimeString();
 
-        const desc = description.toLowerCase();
+          const desc = description.toLowerCase();
 
-        let icon = "🌈";
+          let icon = "🌈";
 
-        if (desc.includes("clear")) icon = "☀️";
-        else if (desc.includes("cloud")) icon = "☁️";
-        else if (desc.includes("rain")) icon = "🌧️";
-        else if (desc.includes("snow")) icon = "❄️";
-        else if (desc.includes("thunder")) icon = "⛈️";
-        else icon = "🌤️";
+          if (desc.includes("clear")) icon = "☀️";
+          else if (desc.includes("cloud")) icon = "☁️";
+          else if (desc.includes("rain")) icon = "🌧️";
+          else if (desc.includes("snow")) icon = "❄️";
+          else if (desc.includes("thunder")) icon = "⛈️";
+          else icon = "🌤️";
 
-        const card = document.createElement("div");
-        card.className = "col-md-6 col-lg-4";
-        card.innerHTML = `
-          <div class="card weather-card p-3">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h5>${city.name} ${icon}</h5>
-              <button onclick="showEditPrompt('${city._id}', '${city.name}')" class="btn btn-sm btn-outline-secondary me-2">✏️</button>
-              <button onclick="deleteCity('${city._id}')" class="btn btn-sm btn-outline-danger">🗑️</button>
-            </div>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">🌡️ Température: <strong>${temp}°C</strong></li>
-              <li class="list-group-item">💧 Humidité: <strong>${humidity}%</strong></li>
-              <li class="list-group-item">🧭 Pression: <strong>${pressure} hPa</strong></li>
-              <li class="list-group-item">🌬️ Vent: <strong>${wind} m/s</strong></li>
-              <li class="list-group-item">👁️ Visibilité: <strong>${visibility}</strong></li>
-              <li class="list-group-item">☁️ Nuages: <strong>${clouds}</strong></li>
-              <li class="list-group-item">🌅 Lever du soleil: <strong>${sunrise}</strong></li>
-              <li class="list-group-item">🌇 Coucher du soleil: <strong>${sunset}</strong></li>
-            </ul>
+          const card = document.createElement("div");
+          card.className = "col-md-6 col-lg-4";
+          card.innerHTML = `
+        <div class="card weather-card p-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5>${city.name} ${icon}</h5>
+            <button onclick="showEditPrompt('${city._id}', '${city.name}')" class="btn btn-sm btn-outline-secondary me-2">✏️</button>
+            <button onclick="deleteCity('${city._id}')" class="btn btn-sm btn-outline-danger">🗑️</button>
           </div>
-        `;
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">🌡️ Température: <strong>${temp}°C</strong></li>
+            <li class="list-group-item">💧 Humidité: <strong>${humidity}%</strong></li>
+            <li class="list-group-item">🧭 Pression: <strong>${pressure} hPa</strong></li>
+            <li class="list-group-item">🌬️ Vent: <strong>${wind} m/s</strong></li>
+            <li class="list-group-item">👁️ Visibilité: <strong>${visibility}</strong></li>
+            <li class="list-group-item">☁️ Nuages: <strong>${clouds}</strong></li>
+            <li class="list-group-item">🌅 Lever du soleil: <strong>${sunrise}</strong></li>
+            <li class="list-group-item">🌇 Coucher du soleil: <strong>${sunset}</strong></li>
+          </ul>
+        </div>
+      `;
 
-        cityList.appendChild(card);
-      });
+          cityList.appendChild(card);
+        });
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors du chargement des villes: ' + error.message);
+      }
     }
 
     async function addCity() {
-  const name = document.getElementById("city").value.trim(); 
+      const name = document.getElementById("city").value.trim();
 
-  if (!name) {
-    alert("Saisissez une ville !");
-    return;
-  }
+      if (!name) {
+        alert("Saisissez une ville !");
+        return;
+      }
 
-  const res = await fetch(`${API_URL}/cities`, {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + token,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ name }) 
-  });
+      const res = await fetch(`${API_URL}/cities`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({ name })
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Erreur ajout");
+          return res.json();
+        })
+        .then(() => {
+          document.getElementById("city").value = "";
+          loadCities();
+        })
+        .catch(err => alert(err));
+    }
 
-  if (!res.ok) {
-    const err = await res.json();
-    alert("Erreur: " + err.error);
-    return;
-  }
 
-  document.getElementById("city").value = "";
-  loadCities();
-}
+    async function updateCity(id, newName) {
+      const res = await fetch(`${API_URL}/cities/${id}`, {
+        method: "PUT",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name: newName })
+      });
 
+      if (!res.ok) {
+        const err = await res.json();
+        alert("Erreur: " + err.error);
+        return;
+      }
 
-async function updateCity(id, newName) {
-  const res = await fetch(`${API_URL}/cities${id}`, {
-    method: "PUT",
-    headers: {
-      "Authorization": "Bearer " + token,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ name: newName })
-  });
-
-  if (!res.ok) {
-    const err = await res.json();
-    alert("Erreur: " + err.error);
-    return;
-  }
-
-  loadCities();
-}
+      loadCities();
+    }
 
 
 
     async function deleteCity(id) {
-      await fetch(`${API_URL}/cities` + id, {
-        method: "DELETE",
-        headers: { Authorization: "Bearer " + token }
-      });
-      loadCities();
+      try {
+        const res = await fetch(`${API_URL}/cities/${id}`, {
+          method: "DELETE",
+          headers: { Authorization: "Bearer " + token }
+        });
+
+        if (!res.ok) {
+          throw new Error('Erreur lors de la suppression');
+        }
+
+        await loadCities();
+      } catch (error) {
+        alert('Erreur lors de la suppression: ' + error.message);
+      }
     }
 
     function logout() {
@@ -191,12 +216,13 @@ async function updateCity(id, newName) {
 
     loadCities();
     function showEditPrompt(id, currentName) {
-  const newName = prompt("Entrer le nouveau nom de la ville:", currentName);
-  if (!newName || newName.trim() === "") return;
+      const newName = prompt("Entrer le nouveau nom de la ville:", currentName);
+      if (!newName || newName.trim() === "") return;
 
-  updateCity(id, newName.trim());
-}
+      updateCity(id, newName.trim());
+    }
 
   </script>
 </body>
+
 </html>
