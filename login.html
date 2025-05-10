@@ -12,13 +12,11 @@
   <button onclick="login()" class="btn btn-success">Se connecter</button>
 
 <script>
-  const API_URL = "https://weatherapp-backend-production-57dc.up.railway.app";
-
   async function login() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    const res = await fetch(`${API_URL}/auth/login`, {
+    const res = await fetch('http://localhost:3000/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
