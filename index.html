@@ -56,11 +56,12 @@
   </div>
 
   <script>
+    const API_URL = "https://weatherapp-backend-production.up.railway.app";
     const token = localStorage.getItem("token");
     if (!token) window.location.href = "login.html";
 
     async function loadCities() {
-      const res = await fetch("http://localhost:3000/cities", {
+      const res = await fetch(`${API_URL}/cities`, {
         headers: { Authorization: "Bearer " + token }
       });
 
@@ -129,7 +130,7 @@
     return;
   }
 
-  const res = await fetch("http://localhost:3000/cities", {
+  const res = await fetch(`${API_URL}/cities`, {
     method: "POST",
     headers: {
       "Authorization": "Bearer " + token,
@@ -150,7 +151,7 @@
 
 
 async function updateCity(id, newName) {
-  const res = await fetch(`http://localhost:3000/cities/${id}`, {
+  const res = await fetch(`${API_URL}/cities${id}`, {
     method: "PUT",
     headers: {
       "Authorization": "Bearer " + token,
@@ -171,7 +172,7 @@ async function updateCity(id, newName) {
 
 
     async function deleteCity(id) {
-      await fetch("http://localhost:3000/cities/" + id, {
+      await fetch(`${API_URL}/cities` + id, {
         method: "DELETE",
         headers: { Authorization: "Bearer " + token }
       });
@@ -179,7 +180,7 @@ async function updateCity(id, newName) {
     }
 
     function logout() {
-      fetch("http://localhost:3000/auth/logout", {
+      fetch(`${API_URL}/auth/logout`, {
         method: "POST",
         headers: { Authorization: "Bearer " + token }
       }).then(() => {
