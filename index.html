@@ -61,7 +61,7 @@
     if (!token) window.location.href = "login.html";
 
     async function loadCities() {
-      const res = await fetch("http://localhost:3000/cities", {
+      const res = await fetch("https://weather-backend.onrender.com/cities", {
         headers: { Authorization: "Bearer " + token }
       });
 
@@ -130,7 +130,7 @@
     return;
   }
 
-  const res = await fetch("http://localhost:3000/cities", {
+  const res = await fetch("https://weather-backend.onrender.com/cities/", {
     method: "POST",
     headers: {
       "Authorization": "Bearer " + token,
@@ -151,7 +151,7 @@
 
 
 async function updateCity(id, newName) {
-  const res = await fetch(`http://localhost:3000/cities/${id}`, {
+  const res = await fetch(`https://weather-backend.onrender.com/cities/${id}`, {
     method: "PUT",
     headers: {
       "Authorization": "Bearer " + token,
@@ -172,7 +172,7 @@ async function updateCity(id, newName) {
 
 
     async function deleteCity(id) {
-      await fetch("http://localhost:3000/cities/" + id, {
+      await fetch("https://weather-backend.onrender.com/cities/"  + id, {
         method: "DELETE",
         headers: { Authorization: "Bearer " + token }
       });
@@ -180,7 +180,7 @@ async function updateCity(id, newName) {
     }
 
     function logout() {
-      fetch("http://localhost:3000/auth/logout", {
+      fetch("https://weather-backend.onrender.com/auth/logout", {
         method: "POST",
         headers: { Authorization: "Bearer " + token }
       }).then(() => {
